@@ -4,6 +4,7 @@ from torch import nn, optim
 from fuzzy_art import FuzzyArt
 from torchvision import transforms, datasets, models
 
+
 USE_CUDA = torch.cuda.is_available()
 DEVICE = torch.device("cuda:0" if USE_CUDA else "cpu")
 
@@ -32,11 +33,18 @@ test_loader = torch.utils.data.DataLoader(
                        transforms.Normalize((0.1307,), (0.3081,))
                    ])),
     batch_size=TEST_BATCH_SIZE, shuffle=True)
-
+    
+def embed(train_loader):
+    for batch_idx, (data, target) in enumerate(train_loader):
+        
+        embedded = TSNE(n_components=2, learning_rate='auto', init='random').fit_transform(data.squeeze())
+        print(embedded.shape)
+        
 def train(model, train_loader, optimizer):
     assert type(model) is FuzzyArt
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(DEVICE)[0], target.to(DEVICE)[0]
+        print(target)
         data = torch.flatten(data)
         output = model.fuzzy_art(data, training=True)
 
@@ -50,4 +58,5 @@ def evaluate(model, test_loader, optimizer):
 
 model = FuzzyArt(cp=CHOICE_PARAM, vp=VIGILENCE_PARAM, lr=LEARNING_RATE)
 for epoch in range(EPOCHS):
-    train(model, train_loader, optimizer=None)
+    # train(model, train_loader, optimizer=None)
+    embed(train_loader)
