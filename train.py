@@ -36,11 +36,11 @@ class Cell():
     pred = None
     if len(self.label_dist) > 0:
       sorted_dist = sorted(self.label_dist.items(), key=lambda item: item[1])
-      # # without uncertainty
-      # pred = sorted_dist[-1][0]
-      # with uncertainty
-      if sorted_dist[-1][1] / self.strength_sum > self.threshold:
-        pred = sorted_dist[-1][0]
+      # without uncertainty
+      pred = sorted_dist[-1][0]
+      # # with uncertainty
+      # if sorted_dist[-1][1] / self.strength_sum > self.threshold:
+      #   pred = sorted_dist[-1][0]
     return pred
 
 class MemorySpace():
